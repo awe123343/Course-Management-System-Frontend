@@ -24,7 +24,7 @@ p {
 
 .content {
 	display: flex;
-	margin: 10em auto 32px;
+	margin: 5em auto 32px;
 	padding: 0 16px;
 	max-width: 960px;
 	flex-direction: column;

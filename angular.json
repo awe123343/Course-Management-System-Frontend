@@ -123,6 +123,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "CourseSysFrontEnd"
+    }
+  },
+  "defaultProject": "CourseSysFrontEnd",
+  "cli": {
+    "analytics": false
+  }
 }
