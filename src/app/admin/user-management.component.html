@@ -1,0 +1,131 @@
+<p-toast></p-toast>
+
+<p-card header="User Management" styleClass="p-card-shadow">
+    <p-toolbar styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
+                (click)="addEditUser()"></button>
+            <button pButton [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()"
+                [disabled]="!selectedUsers || !selectedUsers.length"></button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [columns]="cols" [value]="users" [(selection)]="selectedUsers" [rowHover]="true" [paginator]="true"
+        [rows]="10" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Manage Users</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                </th>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+
+            <tr *ngIf="!users" class="text-center">
+                <td colspan="6">
+                    <span><i class="pi pi-spin pi-spinner"></i></span>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <td>
+                    <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                </td>
+                <td *ngFor="let col of columns">
+                    {{rowData[col.field]}}
+                </td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="addEditUser(rowData)"></button>
+                    <button pButton icon="pi pi-trash" class="p-button-rounded p-button-warning"
+                        (click)="deleteUser(rowData.id)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{users ? users.length : 0 }} products.
+            </div>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="displayUserDialog" [style]="{ 'max-width' : '30em'}" header="User Details" [modal]="true"
+    styleClass="p-fluid">
+    <form [formGroup]="userAddEditForm" (ngSubmit)="onUserFormSubmit()">
+        <div class="p-field">
+            <label for="username">Username</label>
+            <input type="text" pInputText id="username" formControlName="username"
+                pTooltip="Enter a username with at least four characters" tooltipPosition="bottom" />
+            <div class="p-col-12" *ngIf="f.username.touched && f.username.errors">
+                <small class="p-invalid" *ngIf="f.username.errors.required">Username is required</small>
+                <small class="p-invalid" *ngIf="f.username.errors.minlength"
+                    text="Username should be at least four characters"></small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="firstName">First Name</label>
+            <input type="text" pInputText id="firstName" formControlName="firstName" />
+            <div class="p-col-12" *ngIf="f.firstName.touched && f.firstName.errors">
+                <small class="p-invalid" *ngIf="f.firstName.errors.required">First name is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="lastName">Last Name</label>
+            <input type="text" pInputText id="lastName" formControlName="lastName" />
+            <div class="p-col-12" *ngIf="f.lastName.touched && f.lastName.errors">
+                <small class="p-invalid" *ngIf="f.lastName.errors.required">Last name is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="password">Password</label>
+            <input type="password" pPassword id="password" formControlName="password" tooltipPosition="bottom"
+                pTooltip="Include upper case letter, lower case letter and numbers in your password. The length of your password should be between six and sixteen characters" />
+            <div class="p-col-12" *ngIf="f.password.touched && f.password.errors">
+                <small class="p-invalid" *ngIf="f.password.errors.required">Password is required</small>
+                <small class="p-invalid" *ngIf="f.password.errors.pattern">Please enter a valid password, check
+                    requirement in tooltip</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label class="p-mb-3">Role</label>
+            <div class="p-formgrid p-grid">
+                <div *ngFor="let r of roles" class="p-field-radiobutton p-col-6">
+                    <p-radioButton id="role{{r}}" name="role" [label]="r" [value]="r" formControlName="role"
+                        [(ngModel)]="selectedRole"></p-radioButton>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-d-flex p-jc-end user-dialog-footer">
+            <button pButton type="button" label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton type="submit" label="Save" [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
+                class="p-button-text" [disabled]="userAddEditForm.invalid"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-confirmDialog [style]="{ 'max-width': '36em'}"></p-confirmDialog>

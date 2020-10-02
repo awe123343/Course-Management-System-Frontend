@@ -1,0 +1,12 @@
+<div class="card mt-4">
+    <h4 class="card-header">Home</h4>
+    <div class="card-body">
+        <p>You're logged in with Course Management System!!</p>
+        <p>This page can be accessed by <u>all authenticated users</u>.</p>
+        <div *ngIf="loading" class="spinner-border spinner-border-sm">
+            <p>
+                Your role is: <strong>{{ user.role }}</strong>.
+            </p>
+        </div>
+    </div>
+</div>

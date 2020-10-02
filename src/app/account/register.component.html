@@ -1,0 +1,80 @@
+<p-messages></p-messages>
+
+<p-card header="Register" [style]="{'max-width': '30em'}" styleClass="p-card-shadow">
+    <ng-template pTemplate="header">
+        <img alt="Card" src="assets/usercard.png">
+    </ng-template>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="p-grid p-fluid">
+            <div class="p-col-12">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                        <input type="text" pInputText placeholder="Username" formControlName="username" class="p-mr-2"
+                            pTooltip="Enter a username with at least four characters" />
+                    </div>
+                    <div class="p-col-12" *ngIf="f.username.touched && f.username.errors">
+                        <p-message *ngIf="f.username.errors.required" severity="error" text="Username is required">
+                        </p-message>
+                        <p-message *ngIf="f.username.errors.minlength" severity="error"
+                            text="Username should be at least four characters">
+                        </p-message>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                        <input type="text" pInputText placeholder="First name" formControlName="firstName"
+                            class="p-mr-2" />
+                    </div>
+                    <div class="p-col-12" *ngIf="f.firstName.touched && f.firstName.errors">
+                        <p-message *ngIf="f.firstName.errors" severity="error" text="First name is required">
+                        </p-message>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-user"></i></span>
+                        <input type="text" pInputText placeholder="Last name" formControlName="lastName"
+                            class="p-mr-2" />
+                    </div>
+                    <div class="p-col-12" *ngIf="f.lastName.touched && f.lastName.errors">
+                        <p-message *ngIf="f.lastName.errors" severity="error" text="Last name is required">
+                        </p-message>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12">
+                <div class="p-grid p-fluid">
+                    <div class="p-col-12 p-inputgroup">
+                        <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
+                        <input type="password" pPassword placeholder="Password" formControlName="password"
+                            class="p-mr-2"
+                            pTooltip="Include upper case letter, lower case letter and numbers in your password. The length of your password should be between six and sixteen characters" />
+                    </div>
+                    <div class="p-col-12" *ngIf="f.password.touched && f.password.errors">
+                        <p-message *ngIf="f.password.errors.required" severity="error" text="Password is required">
+                        </p-message>
+                        <p-message *ngIf="f.password.errors.pattern" severity="error"
+                            text="Please enter a valid password, check requirement in tooltip">
+                        </p-message>
+                    </div>
+                </div>
+            </div>
+            <div class="p-col-12">
+                <div class="p-d-flex p-jc-center">
+                    <p-button type="submit" label="Register" [disabled]="form.invalid"
+                        [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-user-plus'">
+                    </p-button>
+                    <p-button label="Login" icon="pi pi-sign-in" (click)="navToLogin()"
+                        styleClass="p-ml-2 p-pl-4 p-pr-4">
+                    </p-button>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-card>
