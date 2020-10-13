@@ -53,7 +53,7 @@
                     <div class="p-col-12 p-inputgroup">
                         <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
                         <input type="password" pPassword placeholder="Password" formControlName="password"
-                            class="p-mr-2"
+                            class="p-mr-2" autocomplete="off"
                             pTooltip="Include upper case letter, lower case letter and numbers in your password. The length of your password should be between six and sixteen characters" />
                     </div>
                     <div class="p-col-12" *ngIf="f.password.touched && f.password.errors">

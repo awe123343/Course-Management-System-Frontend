@@ -18,7 +18,8 @@
             <div class="p-col-12">
                 <div class="p-inputgroup">
                     <span class="p-inputgroup-addon"><i class="pi pi-lock"></i></span>
-                    <input type="password" pPassword placeholder="Password" formControlName="password" class="p-mr-2" />
+                    <input type="password" pPassword autocomplete="off" placeholder="Password"
+                        formControlName="password" class="p-mr-2" />
                     <p-message *ngIf="f.password.dirty && f.password.errors" severity="error"
                         text="Password is required">
                     </p-message>

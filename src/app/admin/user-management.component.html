@@ -5,7 +5,7 @@
         <ng-template pTemplate="left">
             <button pButton label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
                 (click)="addEditUser()"></button>
-            <button pButton [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()"
+            <button pButton icon="pi pi-trash" class="p-button-danger" (click)="deleteSelectedUsers()"
                 [disabled]="!selectedUsers || !selectedUsers.length"></button>
         </ng-template>
 
@@ -15,7 +15,7 @@
 
     <p-table #dt [columns]="cols" [value]="users" [(selection)]="selectedUsers" [rowHover]="true" [paginator]="true"
         [rows]="10" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-        [showCurrentPageReport]="true">
+        [showCurrentPageReport]="true" [loading]="!users">
 
         <ng-template pTemplate="caption">
             <div class="p-d-flex p-ai-center p-jc-between">
@@ -38,12 +38,6 @@
                     <p-sortIcon [field]="col.field"></p-sortIcon>
                 </th>
                 <th></th>
-            </tr>
-
-            <tr *ngIf="!users" class="text-center">
-                <td colspan="6">
-                    <span><i class="pi pi-spin pi-spinner"></i></span>
-                </td>
             </tr>
         </ng-template>
 
@@ -102,6 +96,7 @@
         <div class="p-field">
             <label for="password">Password</label>
             <input type="password" pPassword id="password" formControlName="password" tooltipPosition="bottom"
+                autocomplete="off"
                 pTooltip="Include upper case letter, lower case letter and numbers in your password. The length of your password should be between six and sixteen characters" />
             <div class="p-col-12" *ngIf="f.password.touched && f.password.errors">
                 <small class="p-invalid" *ngIf="f.password.errors.required">Password is required</small>
