@@ -60,7 +60,7 @@
 
         <ng-template pTemplate="summary">
             <div class="p-d-flex p-ai-center p-jc-between">
-                In total there are {{users ? users.length : 0 }} products.
+                In total there are {{users ? users.length : 0 }} courses.
             </div>
         </ng-template>
     </p-table>
@@ -117,8 +117,8 @@
         <div class="p-d-flex p-jc-end user-dialog-footer">
             <button pButton type="button" label="Cancel" icon="pi pi-times" class="p-button-text"
                 (click)="hideDialog()"></button>
-            <button pButton type="submit" label="Save" [icon]="loading ? 'pi pi-spin pi-spinner' : 'pi pi-check'"
-                class="p-button-text" [disabled]="userAddEditForm.invalid"></button>
+            <button pButton type="submit" label="Save" icon="pi pi-check" class="p-button-text"
+                [disabled]="userAddEditForm.invalid"></button>
         </div>
     </form>
 </p-dialog>

@@ -1,0 +1,138 @@
+<p-toast></p-toast>
+
+<p-tabView>
+    <p-tabPanel leftIcon="pi pi-briefcase" header="Assignments">
+        <p-table #dtAssignment [columns]="cols" [value]="assignments" [rowHover]="true" [paginator]="true" [rows]="10"
+            dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [loading]="!assignments">
+
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    <h5 class="p-m-0">Assignments</h5>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text"
+                            (input)="dtAssignment.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search..." />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th>Submitted</th>
+                    <th>Grade</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns">
+                        {{rowData[col.field]}}
+                    </td>
+                    <td>
+                        <i class="pi pi-check-square" style="font-size: 1.5rem" *ngIf="rowData.submitted"></i>
+                        <i class="pi pi-times-circle" style="font-size: 1.5rem" *ngIf="!rowData.submitted"></i>
+                    </td>
+                    <td>{{getAssignmentGrade(rowData) || 'Ungraded'}}</td>
+                    <td>
+                        <button pButton icon="pi pi-cloud-upload" class="p-button-rounded p-button-secondary p-mr-2"
+                            label="Submit" (click)="viewCourseMaterial(rowData)" *ngIf="!rowData.submitted"></button>
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-warning p-mr-2"
+                            label="Update" (click)="viewCourseMaterial(rowData)"
+                            *ngIf="rowData.submitted && !getAssignmentGrade(rowData)"></button>
+                        <button pButton icon="pi pi-folder-open" class="p-button-rounded p-button-success p-mr-2"
+                            label="Review" (click)="viewCourseMaterial(rowData)"
+                            *ngIf="rowData.submitted && getAssignmentGrade(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="summary">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    In total there are {{assignments ? assignments.length : 0 }} assignments.
+                </div>
+            </ng-template>
+        </p-table>
+    </p-tabPanel>
+    <p-tabPanel leftIcon="pi pi-file" header="Materials">
+        <p-table #dtMaterial [columns]="cols" [value]="materials" [rowHover]="true" [paginator]="true" [rows]="10"
+            dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [loading]="!materials">
+
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    <h5 class="p-m-0">Course materials</h5>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dtMaterial.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search..." />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th></th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns">
+                        {{rowData[col.field]}}
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-folder-open" class="p-button-rounded p-button-success p-mr-2"
+                            label="View material" (click)="viewCourseMaterial(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="summary">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    In total there are {{materials ? materials.length : 0 }} course materials.
+                </div>
+            </ng-template>
+        </p-table>
+    </p-tabPanel>
+</p-tabView>
+
+<p-dialog [(visible)]="displayDialog" [style]="{ 'width' : '90%' }" [header]="getDialogHeader()" [modal]="true"
+    styleClass="p-fluid">
+
+    <p-panel *ngIf="courseMaterialToView" styleClass="p-mb-5">
+        <p-header>
+            {{courseMaterialToView.courseCode}} {{courseMaterialToView.courseName}}: {{courseMaterialToView.title}}
+        </p-header>
+        <div [innerHTML]="courseMaterialToView.content"></div>
+    </p-panel>
+
+    <div class="p-field" *ngIf="courseMaterialToView && courseMaterialToView.isAssignment">
+        <div class="p-mb-2">
+            <h3>Answer</h3>
+            <small>No empty answer can be submitted</small>
+        </div>
+        <p-editor [(ngModel)]="selectedAssignment.submission" [readonly]="selectedAssignment.grades"
+            [style]="{'height':'30em'}"></p-editor>
+
+        <div class="p-d-flex p-jc-end user-dialog-footer" *ngIf="!selectedAssignment.grades">
+            <button pButton type="button" label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton type="button" [label]="courseMaterialToView.submitted ? 'Update' : 'Submit'"
+                icon="pi pi-check" class="p-button-text" (click)="submitAssignment()"
+                [disabled]="!(selectedAssignment.submission && selectedAssignment.submission.trim())"></button>
+        </div>
+    </div>
+</p-dialog>
+
+<p-confirmDialog [style]="{ 'max-width': '36em'}"></p-confirmDialog>

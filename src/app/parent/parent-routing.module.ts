@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
+import { AssignmentComponent } from './assignment.component';
 import { LayoutComponent } from './layout.component';
-import { UserManagementComponent } from './user-management.component';
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutComponent,
         children: [
-            { path: '', component: UserManagementComponent },
-            { path: 'users', component: UserManagementComponent },
+            { path: '', component: AssignmentComponent },
+            { path: 'grades', component: AssignmentComponent },
         ],
     },
 ];
@@ -19,4 +19,4 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule],
 })
-export class AdminRoutingModule {}
+export class ParentRoutingModule {}

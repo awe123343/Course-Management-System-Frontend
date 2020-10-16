@@ -1,0 +1,66 @@
+<p-toast></p-toast>
+
+<p-tabView *ngIf="children">
+    <p-tabPanel leftIcon="pi pi-user" [header]="child.firstName + ' ' + child.lastName"
+        *ngFor="let child of children; let i = index" [selected]="i == 0">
+        <div *ngFor="let course of child.courses" class="p-mt-5">
+            <p-panel [header]="course.courseCode + ' ' + course.courseName + ' (' + course.evaluatorName + ')'"
+                [toggleable]="true">
+                <ng-template pTemplate="icons">
+                    <button pButton class="p-panel-header-icon p-link" icon="pi pi-briefcase"
+                        pTooltip="View Assignments" (click)="viewAssignment(child, course)"></button>
+                </ng-template>
+                <h5>Description:</h5>
+                <p>{{course.description}}</p>
+            </p-panel>
+        </div>
+    </p-tabPanel>
+</p-tabView>
+
+<p-dialog [(visible)]="displayDialog" [style]="{ 'max-width' : '75vw' }" header="Grades" [modal]="true"
+    styleClass="p-fluid">
+    <p-panel *ngIf="selectedCourse">
+        <p-header>
+            {{selectedCourse.courseCode}} {{selectedCourse.courseName}}: {{selectedStudent.firstName}}
+            {{selectedStudent.lastName}}
+        </p-header>
+
+        <p-table [value]="assignments" [rowHover]="true" [paginator]="true" [rows]="10" dataKey="id"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [loading]="!assignments">
+
+            <ng-template pTemplate="header">
+                <tr *ngIf="assignments && assignments.length > 0">
+                    <th>Title</th>
+                    <th>Grade</th>
+                    <th></th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData>
+                <tr>
+                    <td>
+                        {{getMaterialTitle(rowData.courseMaterialId)}}
+                    </td>
+                    <td>
+                        {{rowData.grades || 'Ungraded'}}
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-chevron-circle-right" label="View Submission"
+                            class="p-button-rounded p-button-success" (click)="viewSubmission(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+        </p-table>
+    </p-panel>
+
+    <p-panel *ngIf="displaySubmissionPanel" styleClass="p-mt-5" [toggleable]="true">
+        <p-header>
+            <h4>Submission for {{getMaterialTitle(selectedSubmission.courseMaterialId)}}</h4>
+            <div [innerHTML]="getMaterialContent(selectedSubmission.courseMaterialId)"></div>
+        </p-header>
+        <div [innerHTML]="selectedSubmission.submission"></div>
+    </p-panel>
+
+</p-dialog>

@@ -1,0 +1,96 @@
+<p-toast></p-toast>
+
+<div class="p-d-flex p-jc-center">
+    <div class="p-col-12">
+        <p-card header="Enrollment Information" styleClass="p-card-shadow">
+            <div *ngFor="let course of courses">
+                <p-panel header="{{course.courseCode}}: {{course.courseName}}" [toggleable]="true">
+
+                    <p-table [columns]="cols" [value]="course.students" [rowHover]="true" [paginator]="true" [rows]="10"
+                        dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                        [showCurrentPageReport]="true" [loading]="!courses">
+
+                        <ng-template pTemplate="header" let-columns>
+                            <tr *ngIf="course.students && course.students.length > 0">
+                                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                                    {{col.header}}
+                                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                                </th>
+                                <th *ngIf="!isEvaluator"></th>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="body" let-rowData let-columns="columns">
+                            <tr>
+                                <td *ngFor="let col of columns">
+                                    {{rowData[col.field]}}
+                                </td>
+                                <td *ngIf="!isEvaluator">
+                                    <button pButton icon="pi pi-chevron-circle-right" label="View Grades"
+                                        class="p-button-link p-button-success"
+                                        (click)="viewAssignment(rowData, course)"></button>
+                                </td>
+                            </tr>
+                        </ng-template>
+
+                        <ng-template pTemplate="summary">
+                            <div class="p-d-flex p-ai-center p-jc-between">
+                                In total there are {{course.students ? course.students.length : 0 }} student(s)
+                                registered {{course.courseCode}}.
+                            </div>
+                        </ng-template>
+                    </p-table>
+                </p-panel>
+            </div>
+        </p-card>
+
+        <p-dialog [(visible)]="displayDialog" [style]="{ 'max-width' : '75vw' }" header="Grades" [modal]="true"
+            styleClass="p-fluid">
+            <p-panel *ngIf="selectedCourse">
+                <p-header>
+                    {{selectedCourse.courseCode}} {{selectedCourse.courseName}}: {{selectedStudent.firstName}}
+                    {{selectedStudent.lastName}}
+                </p-header>
+
+                <p-table [value]="assignments" [rowHover]="true" [paginator]="true" [rows]="10" dataKey="id"
+                    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                    [showCurrentPageReport]="true" [loading]="!assignments">
+
+                    <ng-template pTemplate="header">
+                        <tr *ngIf="assignments && assignments.length > 0">
+                            <th>Title</th>
+                            <th>Grade</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+
+                    <ng-template pTemplate="body" let-rowData>
+                        <tr>
+                            <td>
+                                {{getMaterialTitle(rowData.courseMaterialId)}}
+                            </td>
+                            <td>
+                                {{rowData.grades || 'Ungraded'}}
+                            </td>
+                            <td>
+                                <button pButton icon="pi pi-chevron-circle-right" label="View Submission"
+                                    class="p-button-rounded p-button-success"
+                                    (click)="viewSubmission(rowData)"></button>
+                            </td>
+                        </tr>
+                    </ng-template>
+
+                </p-table>
+            </p-panel>
+
+            <p-panel *ngIf="displaySubmissionPanel" styleClass="p-mt-5" [toggleable]="true">
+                <p-header>
+                    <h4>Submission for {{getMaterialTitle(selectedSubmission.courseMaterialId)}}</h4>
+                    <div [innerHTML]="getMaterialContent(selectedSubmission.courseMaterialId)"></div>
+                </p-header>
+                <div [innerHTML]="selectedSubmission.submission"></div>
+            </p-panel>
+
+        </p-dialog>
+    </div>
+</div>

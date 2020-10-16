@@ -1,0 +1,109 @@
+<p-toast></p-toast>
+
+<p-card header="Course Management" styleClass="p-card-shadow">
+    <p-toolbar *ngIf="isAdmin" styleClass="p-mb-4">
+        <ng-template pTemplate="left">
+            <button pButton label="New" icon="pi pi-plus" class="p-button-success p-mr-2"
+                (click)="addEditCourse()"></button>
+        </ng-template>
+
+        <ng-template pTemplate="right">
+        </ng-template>
+    </p-toolbar>
+
+    <p-table #dt [columns]="cols" [value]="courses" [(selection)]="selectedCourses" [rowHover]="true" [paginator]="true"
+        [rows]="10" dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+        [showCurrentPageReport]="true" [loading]="!courses">
+
+        <ng-template pTemplate="caption">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                <h5 class="p-m-0">Manage Courses</h5>
+                <span class="p-input-icon-left">
+                    <i class="pi pi-search"></i>
+                    <input pInputText type="text" (input)="dt.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Search..." />
+                </span>
+            </div>
+        </ng-template>
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                    {{col.header}}
+                    <p-sortIcon [field]="col.field"></p-sortIcon>
+                </th>
+                <th></th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <td *ngFor="let col of columns" [pTooltip]="rowData[col.field]">
+                    {{col.field === 'description' ? (rowData[col.field].length > 60) ? (rowData[col.field] | slice:0:60) + '..' : (rowData[col.field]) : rowData[col.field]}}
+                </td>
+                <td>
+                    <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-success p-mr-2"
+                        (click)="addEditCourse(rowData)"></button>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="summary">
+            <div class="p-d-flex p-ai-center p-jc-between">
+                In total there are {{courses ? courses.length : 0 }} courses.
+            </div>
+        </ng-template>
+    </p-table>
+</p-card>
+
+<p-dialog [(visible)]="displayCourseDialog" [style]="{ 'max-width' : '30em'}" header="Course Details" [modal]="true"
+    styleClass="p-fluid">
+    <form [formGroup]="courseAddEditForm" (ngSubmit)="onCourseFormSubmit()">
+        <div class="p-field">
+            <label for="evaluatorId">Evaluator</label>
+            <p-dropdown [options]="evaluators" formControlName="evaluatorId" placeholder="Select an evaluator"
+                optionLabel="firstName"></p-dropdown>
+            <div class="p-col-12" *ngIf="f.evaluatorId.touched && f.evaluatorId.errors">
+                <small class="p-invalid" *ngIf="f.evaluatorId.errors.required">Evaluator is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="courseCode">Course Code</label>
+            <input type="text" pInputText id="courseCode" formControlName="courseCode" />
+            <div class="p-col-12" *ngIf="f.courseCode.touched && f.courseCode.errors">
+                <small class="p-invalid" *ngIf="f.courseCode.errors.required">Course Code is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="firstName">Course Name</label>
+            <input type="text" pInputText id="courseName" formControlName="courseName" />
+            <div class="p-col-12" *ngIf="f.courseName.touched && f.courseName.errors">
+                <small class="p-invalid" *ngIf="f.courseName.errors.required">Course name is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="capacity">Capacity</label>
+            <p-inputNumber inputId="capacity" formControlName="capacity" [min]="1" [step]="1" [showButtons]="true">
+            </p-inputNumber>
+            <div class="p-col-12" *ngIf="f.capacity.touched && f.capacity.errors">
+                <small class="p-invalid" *ngIf="f.capacity.errors.required">Course capacity is required</small>
+            </div>
+        </div>
+        <div class="p-field">
+            <label for="description">Description</label>
+            <textarea pInputTextarea type="text" id="description" formControlName="description"></textarea>
+            <div class="p-col-12" *ngIf="f.description.touched && f.description.errors">
+                <small class="p-invalid" *ngIf="f.description.errors.required">Description is required</small>
+            </div>
+        </div>
+
+        <div class="p-d-flex p-jc-end user-dialog-footer">
+            <button pButton type="button" label="Cancel" icon="pi pi-times" class="p-button-text"
+                (click)="hideDialog()"></button>
+            <button pButton type="submit" label="Save" icon="pi pi-check" class="p-button-text"
+                [disabled]="courseAddEditForm.invalid"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<p-confirmDialog [style]="{ 'max-width': '36em'}"></p-confirmDialog>

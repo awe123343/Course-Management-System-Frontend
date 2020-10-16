@@ -1,0 +1,96 @@
+<p-toast></p-toast>
+
+<p-tabView>
+    <p-tabPanel leftIcon="pi pi-filter" header="My courses">
+        <p-table #dtMine [columns]="cols" [value]="myCourses" [rowHover]="true" [paginator]="true" [rows]="10"
+            dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [loading]="!myCourses">
+
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    <h5 class="p-m-0">Courses</h5>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dtMine.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search..." />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th></th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns" [pTooltip]="rowData[col.field]">
+                        {{getDisplayContent(col.field, rowData)}}
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-danger p-mr-2"
+                            label="Disenroll" (click)="deEnroll(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="summary">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    In total there are {{myCourses ? myCourses.length : 0 }} courses.
+                </div>
+            </ng-template>
+        </p-table>
+    </p-tabPanel>
+    <p-tabPanel leftIcon="pi pi-bars" header="All">
+        <p-table #dtAll [columns]="cols" [value]="allCourses" [rowHover]="true" [paginator]="true" [rows]="10"
+            dataKey="id" currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+            [showCurrentPageReport]="true" [loading]="!allCourses">
+
+            <ng-template pTemplate="caption">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    <h5 class="p-m-0">Courses</h5>
+                    <span class="p-input-icon-left">
+                        <i class="pi pi-search"></i>
+                        <input pInputText type="text" (input)="dtAll.filterGlobal($event.target.value, 'contains')"
+                            placeholder="Search..." />
+                    </span>
+                </div>
+            </ng-template>
+
+            <ng-template pTemplate="header" let-columns>
+                <tr>
+                    <th *ngFor="let col of columns" [pSortableColumn]="col.field">
+                        {{col.header}}
+                        <p-sortIcon [field]="col.field"></p-sortIcon>
+                    </th>
+                    <th></th>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-rowData let-columns="columns">
+                <tr>
+                    <td *ngFor="let col of columns" [pTooltip]="rowData[col.field]">
+                        {{getDisplayContent(col.field, rowData)}}
+                    </td>
+                    <td>
+                        <button pButton icon="pi pi-pencil" class="p-button-rounded p-button-info p-mr-2" label="Enroll"
+                            [disabled]="!canEnroll(rowData)" (click)="enroll(rowData)"></button>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template pTemplate="summary">
+                <div class="p-d-flex p-ai-center p-jc-between">
+                    In total there are {{allCourses ? allCourses.length : 0 }} courses.
+                </div>
+            </ng-template>
+        </p-table>
+    </p-tabPanel>
+</p-tabView>
+
+<p-confirmDialog [style]="{ 'max-width': '36em'}"></p-confirmDialog>

@@ -1,50 +1,46 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
+import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
-import { DropdownModule } from 'primeng/dropdown';
+import { EditorModule } from 'primeng/editor';
 import { InputTextModule } from 'primeng/inputtext';
-import { MessageModule } from 'primeng/message';
-import { PasswordModule } from 'primeng/password';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { SharedModule } from 'primeng/api';
+import { PanelModule } from 'primeng/panel';
 import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 import { ToastModule } from 'primeng/toast';
-import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { ConfirmationService } from 'primeng/api';
 import { MessageService } from 'primeng/api';
 
-import { AdminRoutingModule } from './admin-routing.module';
-import { UserManagementComponent } from './user-management.component';
+import { StudentRoutingModule } from './student-routing.module';
+import { AssignmentComponent } from './assignment.component';
+import { CourseComponent } from './course.component';
 import { LayoutComponent } from './layout.component';
 
 @NgModule({
-    declarations: [UserManagementComponent, LayoutComponent],
+    declarations: [AssignmentComponent, CourseComponent, LayoutComponent],
     imports: [
         CommonModule,
         FormsModule,
-        ReactiveFormsModule,
-        AdminRoutingModule,
+        StudentRoutingModule,
         ButtonModule,
         CardModule,
+        CheckboxModule,
         ConfirmDialogModule,
         DialogModule,
-        DropdownModule,
+        EditorModule,
         InputTextModule,
-        MessageModule,
-        PasswordModule,
-        RadioButtonModule,
-        SharedModule,
+        PanelModule,
         TableModule,
+        TabViewModule,
         ToastModule,
-        ToolbarModule,
         TooltipModule,
     ],
     providers: [ConfirmationService, MessageService],
 })
-export class AdminModule {}
+export class StudentModule {}
